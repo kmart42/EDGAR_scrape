@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # data folder and template assumed to be in same folder
-DATE = "1.6.2020"
+DATE = "12.26.2022"
 DIR = "./Data_" + DATE + "/20210106/"
 df = pd.read_csv("./EDGAR_Template.csv")
 
@@ -22,6 +22,7 @@ for folder in os.listdir(DIR):
                 # check to see if filing is 506(c)
                 tmp, check = lines[6].split('>')
                 if str(check) == "06c\n":
+                    print(file)
 
                     # if so, pull the relevant information which is in the first ~50 lines
                     for i in range(4, 50):

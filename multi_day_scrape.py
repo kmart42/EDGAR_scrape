@@ -1,11 +1,14 @@
 from datetime import date, timedelta
-from secedgar.filings import DailyFilings
+from secedgar import DailyFilings
+from fake_useragent import UserAgent
 import os
 import pandas as pd
 
 
 # per https://sec-edgar.github.io/sec-edgar/filingtypes.html#supported-filing-types
 # 'd' represents Regulation D filing
+
+ua = UserAgent()
 def get_co(filing_entry):
     return filing_entry.form_type.lower() == "d"
 
@@ -15,18 +18,19 @@ def daterange(start_date, end_date):
         yield start_date + timedelta(n)
 
 
-start_date = date(2020, 1, 3)
-end_date = date(2020, 1, 5)
+start_date = date(2022, 12, 12)
+end_date = date(2022, 12, 13)
 for single_date in daterange(start_date, end_date):
     try:
-        form_d = DailyFilings(entry_filter=get_co, date=single_date)
-        form_d.save('./Data' + single_date.strftime("%m.%d.%Y"))
+        # form_d = DailyFilings(entry_filter=get_co, date=single_date, user_agent=ua.random)
+        # form_d.save('./Data' + single_date.strftime("%m.%d.%Y"))
         DATE = single_date.strftime("%m.%d.%Y")
         DIR = "./Data" + DATE + "/" + single_date.strftime("%Y%m%d") + "/"
         df = pd.read_csv("./EDGAR_Template.csv")
 
         # global counter for master output file
         df_ctr = 1
+        print(os.listdir(DIR))
 
         # iterate through all instances in a given day
         for folder in os.listdir(DIR):
@@ -65,7 +69,7 @@ for single_date in daterange(start_date, end_date):
                     txt.close()
 
         # export results of entire day to single csv file
-        df.to_csv('./Results' + DATE + '.csv', index=False, header=True)
+        # df.to_csv('./Results' + DATE + '.csv', index=False, header=True)
 
     except:
         continue
